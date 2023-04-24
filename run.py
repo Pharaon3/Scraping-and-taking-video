@@ -18,6 +18,21 @@ options = webdriver.ChromeOptions()
 options.add_argument('window-size=1920x1080')
 options.add_argument("disable-gpu")
 
+# it's for creating pdf
+settings = {
+       "recentDestinations": [{
+            "id": "Save as PDF",
+            "origin": "local",
+            "account": "",
+        }],
+        "selectedDestinationId": "Save as PDF",
+        "version": 2
+    }
+prefs = {'printing.print_preview_sticky_settings.appState': json.dumps(settings)}
+options.add_experimental_option('prefs', prefs)
+options.add_argument('--kiosk-printing')
+# end of creating pdf setting.
+
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), chrome_options=options)
 
 # driver.get('https://meine.postbank.de/iob5/#/login')
@@ -41,7 +56,9 @@ driver.find_element("xpath", passwordSubmitPath).click()
 time.sleep(50)
 
 title = driver.find_element("xpath", titlePath).click()
-title = driver.find_element("xpath", titlePath).get_attribute('innerHTML')
+time.sleep(50)
+driver.execute_script('window.print();')
+# title = driver.find_element("xpath", titlePath).get_attribute('innerHTML')
 print(title)
 # driver.find_element("xpath", passwordButtonPath).send_keys(u'\ue007')
 # driver.find_element("xpath", passwordPath).send_keys(password)
